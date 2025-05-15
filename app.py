@@ -16,7 +16,7 @@ load_dotenv()
 st.title("🚀 NEXORA - Summarizer")
 # st.sidebar.title("Configuration")
 # api_key = st.sidebar.text_input("Enter Groq api key",type='password')
-api_key = os.getenv('GROQ_API_KEY')
+api_key = st.secrets['GROQ_API_KEY']
 if not api_key:
     st.error("Enter API key for continue")
     st.stop()
