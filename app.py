@@ -11,11 +11,24 @@ from langchain_core.documents import Document
 
 import os 
 from dotenv import load_dotenv
+import subprocess
 load_dotenv()
 
 st.title("🚀 NEXORA - Summarizer")
+
+def install_playwright_browsers():
+    try:
+        subprocess.run(["playwright", "install", "chromium"], check=True)
+    except Exception as e:
+        st.warning(f"Warning: Playwright Chromium install failed: {e}")
+
+
+install_playwright_browsers()
+
+
 # st.sidebar.title("Configuration")
 # api_key = st.sidebar.text_input("Enter Groq api key",type='password')
+st.secrets["PLAYWRIGHT_CHROMIUM_ARGS"] = "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --headless"
 api_key = st.secrets['GROQ_API_KEY']
 if not api_key:
     st.error("Enter API key for continue")
