@@ -4,8 +4,9 @@ from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.callbacks import StreamlitCallbackHandler
+from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 from youtube_transcript_api import YouTubeTranscriptApi
+from langchain_community.document_loaders import SeleniumURLLoader
 from langchain_core.documents import Document
 
 import os 
@@ -13,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 st.title("🚀 NEXORA - Summarizer")
-st.sidebar.title("Configuration")
+# st.sidebar.title("Configuration")
 # api_key = st.sidebar.text_input("Enter Groq api key",type='password')
 api_key = os.getenv('GROQ_API_KEY')
 if not api_key:
@@ -68,8 +69,10 @@ if url_prompt:= st.chat_input(placeholder="Paste Any Url For Summarizing"):
                     doc_text = " ".join([context.text for context in transcript])
                     data = [Document(page_content=doc_text,metadata={'source':'YouTube'})]
                 else:
-                    data = UnstructuredURLLoader(urls=[url_prompt]).load()
-                
+                    loader = SeleniumURLLoader(urls=[url_prompt])
+                    data = loader.load()
+                    language = "English"
+                    
                 final_data = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=100).split_documents(data)
                 chain = load_summarize_chain(
                     llm=llm,
@@ -78,7 +81,7 @@ if url_prompt:= st.chat_input(placeholder="Paste Any Url For Summarizing"):
                     combine_prompt=final_prompt_template,
                 )
                 callback = StreamlitCallbackHandler(st.container(),expand_new_thoughts=False)
-                response = chain.run({"text": final_data, "language": language}  ,callbacks=[callback])
+                response = chain.run({"input_documents": final_data, "language": language},callbacks=[callback])
                 with st.chat_message('ai'):
                     st.write(response)
 
