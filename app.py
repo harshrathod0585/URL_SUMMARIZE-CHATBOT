@@ -14,39 +14,6 @@ from dotenv import load_dotenv
 import subprocess
 load_dotenv()
 
-
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-# from langchain_core.document_loaders import Document
-
-class CustomSeleniumLoader:
-    def __init__(self, urls):
-        self.urls = urls
-
-    def load(self):
-        import tempfile
-        import time
-
-        user_data_dir = tempfile.mkdtemp()
-        options = Options()
-        options.add_argument("--headless=new")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--no-sandbox")
-        options.add_argument(f"--user-data-dir={user_data_dir}")
-        options.add_argument("--disable-gpu")
-
-        driver = webdriver.Chrome(options=options)
-
-        docs = []
-        for url in self.urls:
-            driver.get(url)
-            time.sleep(2)
-            text = driver.find_element("tag name", "body").text
-            docs.append(Document(page_content=text, metadata={"source": url}))
-        
-        driver.quit()
-        return docs
-
 st.title("🚀 NEXORA - Summarizer")
 
 def install_playwright_browsers():
@@ -61,8 +28,7 @@ install_playwright_browsers()
 
 # st.sidebar.title("Configuration")
 # api_key = st.sidebar.text_input("Enter Groq api key",type='password')
-os.environ["PLAYWRIGHT_CHROMIUM_ARGS"] = st.secrets["PLAYWRIGHT_CHROMIUM_ARGS"]
-api_key = st.secrets['GROQ_API_KEY']
+api_key = os.getenv('GROQ_API_KEY')
 if not api_key:
     st.error("Enter API key for continue")
     st.stop()
@@ -115,8 +81,7 @@ if url_prompt:= st.chat_input(placeholder="Paste Any Url For Summarizing"):
                     doc_text = " ".join([context.text for context in transcript])
                     data = [Document(page_content=doc_text,metadata={'source':'YouTube'})]
                 else:
-                    loader = CustomSeleniumLoader([url_prompt])
-
+                    loader = SeleniumURLLoader(urls=[url_prompt])
                     data = loader.load()
                     language = "English"
                     
