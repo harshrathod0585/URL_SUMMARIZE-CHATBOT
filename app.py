@@ -61,8 +61,8 @@ install_playwright_browsers()
 
 # st.sidebar.title("Configuration")
 # api_key = st.sidebar.text_input("Enter Groq api key",type='password')
-os.environ["PLAYWRIGHT_CHROMIUM_ARGS"] = "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --headless"
-api_key = os.getenv('GROQ_API_KEY')
+os.environ["PLAYWRIGHT_CHROMIUM_ARGS"] = st.secrets["PLAYWRIGHT_CHROMIUM_ARGS"]
+api_key = st.secrets['GROQ_API_KEY']
 if not api_key:
     st.error("Enter API key for continue")
     st.stop()
