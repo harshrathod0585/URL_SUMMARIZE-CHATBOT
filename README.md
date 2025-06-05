@@ -1,6 +1,6 @@
 # 🚀 AI - Summarizer
 
-NEXORA is an intelligent chatbot application that summarizes the content of any URL, including standard web pages and YouTube videos, using advanced language models and modern web scraping techniques. Built on [Streamlit](https://streamlit.io/) for an interactive chat interface, NEXORA delivers concise, context-preserving summaries, making it easy to digest long-form content quickly.
+This is an intelligent chatbot application that summarizes the content of any URL, including standard web pages and YouTube videos, using advanced language models and modern web scraping techniques. Built on [Streamlit](https://streamlit.io/) for an interactive chat interface, it delivers concise, context-preserving summaries, making it easy to digest long-form content quickly.
 
 ---
 
